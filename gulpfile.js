@@ -11,16 +11,16 @@ var gulp = require('gulp'),
     include = require('gulp-file-include'),
     // general
     concat = require('gulp-concat'),
-    clean = require('gulp-clean'),
+    del = require('del'),
     connect = require('gulp-connect');
 
 // clean everything
-gulp.task('clean-all', function(){
-    gulp.src('./build/**/*.*', {read: false}).pipe(clean());
+gulp.task('clean', function(cb){
+    del(['build/**'], cb);
 });
 
 // javascript
-gulp.task('js', function(){
+gulp.task('js', ['clean'], function(){
     gulp.src([
                 'bower_components/jquery/dist/jquery.min.js', 
                 // add anything else here
@@ -34,7 +34,7 @@ gulp.task('js', function(){
 });
 
 // html
-gulp.task('html', function(){
+gulp.task('html', ['clean'], function(){
     gulp.src('src/*.{html,php,txt}')
         .pipe(include({ 
             basepath: 'src/'
@@ -51,14 +51,14 @@ gulp.task('html', function(){
 });
 
 // images
-gulp.task('images', function(){
+gulp.task('images', ['clean'], function(){
     gulp.src('src/images/**/*.*')
         .pipe(gulp.dest('./build/images/'))
         .pipe(connect.reload());
 });
 
 // less
-gulp.task('less', function(){
+gulp.task('less', ['clean'], function(){
     // generate the css
     gulp.src([
             'src/less/styles.less'
@@ -74,7 +74,7 @@ gulp.task('less', function(){
 });
 
 // server and watch
-gulp.task('connect', ['clean-all', 'html', 'images', 'less', 'js'], function() {
+gulp.task('connect', ['html', 'images', 'less', 'js'], function() {
     connect.server({
         root: 'build',
         livereload: true
@@ -89,4 +89,4 @@ gulp.task('watch', function () {
 
 gulp.task('serve', ['connect', 'watch']);
 gulp.task('default', ['serve']);
-gulp.task('build', ['clean-all', 'less', 'js', 'html', 'images']);
+gulp.task('build', ['less', 'js', 'html', 'images']);
