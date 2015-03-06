@@ -14,13 +14,25 @@ var gulp = require('gulp'),
     del = require('del'),
     connect = require('gulp-connect');
 
-// clean everything
+// clean tasks
 gulp.task('clean', function(cb){
     del(['build/**'], cb);
 });
+gulp.task('clean-js', function(cb){
+    del(['build/js/**'], cb);
+});
+gulp.task('clean-html', function(cb){
+    del(['build/**/*.{html,php,txt}'], cb);
+});
+gulp.task('clean-img', function(cb){
+    del(['build/images/**'], cb);
+});
+gulp.task('clean-css', function(cb){
+    del(['build/css/*.css'], cb);
+});
 
 // javascript
-gulp.task('js', ['clean'], function(){
+gulp.task('js', ['clean-js'], function(){
     gulp.src([
                 'bower_components/jquery/dist/jquery.min.js', 
                 // add anything else here
@@ -34,31 +46,25 @@ gulp.task('js', ['clean'], function(){
 });
 
 // html
-gulp.task('html', ['clean'], function(){
+gulp.task('html', ['clean-html'], function(){
     gulp.src('src/*.{html,php,txt}')
         .pipe(include({ 
             basepath: 'src/'
         }))
         .pipe(gulp.dest('./build/'))
         .pipe(connect.reload());
-    gulp.src('src/blog/*.html')
-        .pipe(include({ 
-            basepath: 'src/'
-        }))
-        .pipe(gulp.dest('./build/blog'))
-        .pipe(connect.reload());
     gulp.src('src/.htaccess').pipe(gulp.dest('./build/'));
 });
 
 // images
-gulp.task('images', ['clean'], function(){
+gulp.task('images', ['clea-img'], function(){
     gulp.src('src/images/**/*.*')
         .pipe(gulp.dest('./build/images/'))
         .pipe(connect.reload());
 });
 
 // less
-gulp.task('less', ['clean'], function(){
+gulp.task('less', ['clean-css'], function(){
     // generate the css
     gulp.src([
             'src/less/styles.less'
@@ -88,5 +94,5 @@ gulp.task('watch', function () {
 });
 
 gulp.task('serve', ['connect', 'watch']);
-gulp.task('default', ['serve']);
 gulp.task('build', ['less', 'js', 'html', 'images']);
+gulp.task('default', ['serve']);
