@@ -16,7 +16,11 @@ var gulp = require('gulp'),
     // general
     concat = require('gulp-concat'),
     del = require('del'),
-    connect = require('gulp-connect');
+    insert = require('gulp-insert'),
+    connect = require('gulp-connect')
+
+    // variables
+    responsiveCSS = true; // if false, the responsive CSS container width is disabled
 
 // clean tasks
 gulp.task('clean', function(cb){
@@ -85,6 +89,7 @@ gulp.task('less', ['clean-css'], function(){
         .pipe(less())
         .pipe(autoprefixer())
         .pipe(minifyCSS())
+        .pipe(insert.prepend(responsiveCSS ? '' : '.container{width:1170px!important}body>div,body>hr,body>footer{width: 100%;min-width: 1170px!important;}'))
         .pipe(gulp.dest('./build/css/'))
         .pipe(connect.reload());
     // move bootstrap files
