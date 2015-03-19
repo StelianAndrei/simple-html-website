@@ -70,7 +70,7 @@ gulp.task('html', ['clean-html'], function(){
 
 // images
 gulp.task('images', ['clean-img'], function(){
-    gulp.src('src/images/**/*.*').
+    gulp.src('src/images/**/*.*')
         .pipe(imagemin({
             progressive: true,
             svgoPlugins: [{removeViewBox: false}],
